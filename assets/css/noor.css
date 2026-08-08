@@ -579,8 +579,11 @@ section.band { background: var(--ink-700); }
 
 /* One comparator, full width — a real pair beats three mismatched ones. */
 .cmp { position: relative; }
-.cmp--solo { inline-size: min(100%, 1000px); margin-inline: auto; }
-.cmp__frame { position: relative; aspect-ratio: 3 / 2; overflow: hidden; background: var(--ink-800); }
+/* Capped near the source files' native 736px — these are handover photos, and
+   upscaling them further just makes the finish look soft. */
+.cmp--solo { inline-size: min(100%, 860px); margin-inline: auto; }
+.cmp-stack { display: grid; gap: clamp(2.25rem, 5vw, 3.5rem); }
+.cmp__frame { position: relative; aspect-ratio: var(--ar, 3 / 2); overflow: hidden; background: var(--ink-800); }
 .cmp__frame img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
 /* clip-path is physical. --x = how much of the frame BEFORE occupies, measured
    from the reading start; the flipped rule below is what makes RTL correct. */
