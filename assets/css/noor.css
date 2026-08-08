@@ -1,0 +1,864 @@
+/* ============================================================================
+   NOOR — Lit Blueprint
+   Single stylesheet. Tokens → reset → type → layout → light → sections → motion.
+   Every contrast ratio in the comments is WCAG 2.x, verified.
+   ========================================================================== */
+
+/* ── 1. TOKENS ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Anchor ramp — page is darker than the logo, on purpose */
+  --ink-900: #0B0F14;   /* page base */
+  --ink-800: #101821;   /* raised surfaces: cards, tiers, fields */
+  --ink-700: #182029;   /* alternating section band */
+  --slate-600: #2F3A45; /* logo dark — lockup plate only */
+  --slate-500: #38434F; /* logo light — input fills, small plates only */
+  --rule-500: #5A6878;  /* FUNCTIONAL borders + focus rings. 3.37:1 ✓ 1.4.11 */
+  --rule-400: #4A5765;  /* DECORATIVE hairlines only. 2.60:1 — never functional */
+
+  /* Neutral text */
+  --silver: #C9D1D9;    /* body on dark      12.45:1 ✓ AAA */
+  --muted:  #8B97A4;    /* captions, meta     6.46:1 ✓ AA  */
+
+  /* Gold */
+  --gold-300: #E8C777;  /* specular highlight            11.78:1 */
+  --gold-400: #D9AE52;  /* ★ core brand gold. ONLY gold as text on dark. 9.27:1 AAA */
+  --gold-500: #C69B3C;  /* pressed / active               7.46:1 */
+  --gold-600: #997624;  /* ⚠ FLOOR — darkest stop in any text-filling gradient. 4.55:1 */
+  --gold-700: #A77E33;  /* gradient ends on NON-text surfaces only. 5.19:1 */
+  --gold-ink: #6E5214;  /* gold as text on cream 6.32:1. NEVER on dark (2.64:1) */
+
+  /* Light bands */
+  --cream: #F3EEE7;
+  --bone:  #E8E4DC;
+
+  --gem: #FFFFFF;       /* RESERVED: diamond, ray cores, specular. Not a text colour. */
+
+  /* Direction sign — multiply every physical X value by this */
+  --dir: 1;
+
+  /* Type */
+  --font-body:    "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+  --fs-display: clamp(2.75rem, 10vw, 8.5rem);
+  --fs-h2:      clamp(2rem, 5.5vw, 4.5rem);
+  --fs-h3:      clamp(1.375rem, 2.6vw, 2rem);
+  --fs-lead:    clamp(1.125rem, 1.8vw, 1.5rem);
+  --fs-body:    1rem;
+  --fs-meta:    0.8125rem;
+
+  --lh-display: 1.05;
+  --lh-h2:      1.1;
+  --lh-body:    1.6;
+  --ls-display: -0.03em;
+  --ls-body:    -0.011em;
+  --ls-meta:    0.08em;
+  --w-strong:   700;
+
+  /* Space + layout */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --measure: 1440px;
+  --section-y: clamp(4.5rem, 10vw, 10rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* One block flips the entire type system for Arabic */
+:root:lang(ar), [dir="rtl"] {
+  --dir: -1;
+  --font-display: "Alexandria", "IBM Plex Sans Arabic", sans-serif;
+  --fs-display: clamp(2.5rem, 6.4vw, 5.75rem);   /* Arabic sets optically larger */
+  --fs-h2:      clamp(1.75rem, 4.2vw, 3.25rem);
+  --fs-body:    1.125rem;   /* +12.5% — Arabic has no uppercase */
+  --lh-display: 1.30;       /* NOT 1.05 — Arabic headlines collide */
+  --lh-h2:      1.25;
+  --lh-body:    1.80;
+  --ls-display: 0;          /* ⚠ CRITICAL — tracking severs cursive joins */
+  --ls-body:    0;          /* ⚠ CRITICAL */
+  --w-strong:   600;        /* Arabic 700 clogs at the joins */
+}
+
+/* ── 2. RESET ────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-block-start: 6rem;
+}
+@media (max-width: 899px) { html { scroll-padding-block-start: 8.5rem; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--ink-900);
+  color: var(--silver);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  font-synthesis: none;              /* fake-bold destroys Arabic */
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+img { height: auto; background: var(--ink-800); }
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--gold-400);   /* 9.27:1, clears 1.4.11 */
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+::selection { background: var(--gold-400); color: var(--ink-900); }
+
+/* ── 3. TYPE ─────────────────────────────────────────────────────────────── */
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: var(--lh-h2);
+  letter-spacing: var(--ls-display);
+  text-wrap: balance;
+  color: var(--cream);
+}
+h1 { font-size: var(--fs-display); line-height: var(--lh-display); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+
+p { text-align: start; }               /* never `right`, never `justify` */
+strong, b { font-weight: var(--w-strong); }
+
+a:not(.btn) { text-underline-offset: 0.22em; text-decoration-skip-ink: auto; }
+
+.lead { font-size: var(--fs-lead); color: var(--silver); max-inline-size: 52ch; }
+.muted { color: var(--muted); }
+
+/* Meta rails. The SAFE default is untracked body type: tracking a joining
+   script inserts literal gaps where letters must connect, and text-transform
+   would uppercase any embedded Latin. Mono + tracking is opt-in — either the
+   whole document is Latin, or the rail is explicitly marked .meta--latin. */
+.meta {
+  font-family: var(--font-body);
+  font-size: var(--fs-meta);
+  letter-spacing: 0;
+  color: var(--muted);
+}
+:lang(en) .meta, .meta--latin {
+  font-family: var(--font-mono);
+  letter-spacing: var(--ls-meta);
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--ls-meta);
+  color: var(--gold-400);
+  display: block;
+  margin-block-end: 0.75rem;
+}
+:lang(ar) .eyebrow { font-family: var(--font-body); letter-spacing: 0; }
+
+/* Metallic display fill. Fallback colour FIRST — if background-clip fails in
+   WebKit the text is solid gold, never invisible. Darkest stop clamped to
+   --gold-600 (4.55:1); ≥32px only. */
+.metal-gold {
+  color: var(--gold-400);
+  background-image: linear-gradient(100deg,
+    #997624 0%, #A77E33 18%, #D9AE52 38%,
+    #F6EFD2 49%, #E8C777 53%, #C69B3C 74%, #997624 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(217,174,82,.22));
+}
+@supports not (background-clip: text) {
+  .metal-gold { -webkit-text-fill-color: currentColor; }
+}
+
+.gold-rule {
+  block-size: 1px;
+  opacity: .7;
+  background: linear-gradient(90deg, transparent, #A77E33 15%, #E8C777 50%, #A77E33 85%, transparent);
+  border: 0;
+}
+
+/* ── 4. LAYOUT ───────────────────────────────────────────────────────────── */
+
+.wrap {
+  inline-size: min(100% - (var(--gutter) * 2), var(--measure));
+  margin-inline: auto;
+}
+
+section { padding-block: var(--section-y); position: relative; }
+section.band { background: var(--ink-700); }
+
+.sec-head { margin-block-end: clamp(2.5rem, 5vw, 4.5rem); }
+.sec-head .gold-rule { inline-size: 5rem; margin-block: 0 1.25rem; }
+
+/* Visible editorial column rules — hero + one band only, 12% opacity */
+.colrules {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(to right, var(--rule-400) 0 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;   /* the tile repeats — the gradient must not */
+  opacity: .12;
+  z-index: 0;
+}
+
+/* ── 5. BUTTONS ──────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: .95rem 1.6rem;
+  font-family: var(--font-body); font-size: .9375rem; font-weight: 500;
+  border: 1px solid var(--rule-500);
+  border-radius: 0;
+  color: var(--silver);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color .25s var(--ease-out), color .25s var(--ease-out), background-color .25s var(--ease-out);
+}
+.btn:hover { border-color: var(--gold-400); color: var(--cream); }
+
+/* At most ONE gold-filled button per viewport */
+.btn--gold {
+  background: var(--gold-400); border-color: var(--gold-400); color: var(--ink-900);
+  font-weight: 600;
+}
+.btn--gold:hover { background: var(--gold-500); border-color: var(--gold-500); color: var(--ink-900); }
+
+.btn--ghost { border-color: var(--rule-500); }
+
+/* Outlined gold. The sticky header CTA uses this so that the ONE gold-filled
+   button per viewport is always the section's own primary action. */
+.btn--gold-line { border-color: var(--gold-400); color: var(--gold-400); }
+.btn--gold-line:hover { background: var(--gold-400); color: var(--ink-900); }
+
+.btn svg { inline-size: 1.05em; block-size: 1.05em; flex: none; }
+/* Directional icons only. Never blanket-flip. */
+[dir="rtl"] .icon-dir { transform: scaleX(-1); }
+
+/* ── 6. HEADER ───────────────────────────────────────────────────────────── */
+
+.hdr {
+  position: sticky; inset-block-start: 0; z-index: 40;
+  background: color-mix(in srgb, var(--ink-900) 96%, transparent);
+  /* backdrop-filter deliberately absent: glassmorphism + real cost on mid-tier Android */
+  border-block-end: 1px solid var(--rule-400);
+}
+.hdr::after {
+  content: ""; position: absolute; inset-block-end: -1px; inset-inline: 0; block-size: 1px;
+  background: linear-gradient(90deg, transparent, #A77E33 15%, #E8C777 50%, #A77E33 85%, transparent);
+  opacity: 0; transition: opacity .4s var(--ease-out);
+}
+.hdr.is-scrolled::after { opacity: .8; }
+
+.hdr__in {
+  display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.5rem);
+  block-size: 72px;
+}
+
+.brand { display: flex; align-items: baseline; gap: .6rem; flex: none; position: relative; }
+.brand__mark {
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 1.5rem; font-weight: 500; letter-spacing: .14em;
+  color: var(--silver);
+  position: relative;
+}
+/* The light from the hero reaches the wordmark — one pass, then parks off-mask */
+/* The highlight travels, the text does not. A translated overlay would carry
+   its own mask along with it and never appear — the gradient must move
+   inside a static box, so background-position is the moving part. */
+.shimmer { position: relative; }
+.shimmer::after {
+  content: attr(data-word);
+  position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  color: transparent;
+  background-image: linear-gradient(100deg,
+    transparent 42%, #FFFFFF 47%, #F6EFD2 50%, #E8C777 53%, transparent 58%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  background-position: calc(50% + 150% * var(--dir)) 0;   /* parked off the glyphs */
+  -webkit-background-clip: text; background-clip: text;
+  pointer-events: none;
+}
+/* One pass, then parks off the other side. Silver → white → gold fringe → silver. */
+.is-lit .shimmer::after { animation: sweep 1.2s var(--ease-out) forwards; }
+@keyframes sweep {
+  from { background-position: calc(50% + 150% * var(--dir)) 0; }
+  to   { background-position: calc(50% - 150% * var(--dir)) 0; }
+}
+.brand__tag { font-family: var(--font-mono); font-size: .625rem; letter-spacing: .16em; color: var(--muted); }
+@media (max-width: 899px) { .brand__tag { display: none; } }
+
+.nav { display: flex; gap: clamp(.9rem, 2vw, 1.75rem); margin-inline-start: auto; }
+.nav a { font-size: .9375rem; color: var(--silver); padding-block: .35rem; position: relative; }
+.nav a::after {
+  content: ""; position: absolute; inset-block-end: 0; inset-inline: 0; block-size: 1px;
+  background: var(--gold-400); transform: scaleX(0); transform-origin: calc(50% - 50% * var(--dir)) 50%;
+  transition: transform .3s var(--ease-out);
+}
+.nav a:hover::after, .nav a[aria-current="true"]::after { transform: scaleX(1); }
+
+/* Mobile nav is a scrollable strip on its own row, not a hamburger: no JS, no
+   overlay to trap focus in, and every destination stays one tap away. */
+@media (max-width: 899px) {
+  .hdr__in { flex-wrap: wrap; block-size: auto; padding-block: .8rem; gap: .75rem 1rem; }
+  .nav {
+    order: 3; inline-size: 100%; margin-inline-start: 0;
+    overflow-x: auto; overscroll-behavior-inline: contain;
+    gap: 1.35rem; padding-block-end: .25rem;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a { white-space: nowrap; }
+}
+
+.hdr__aside { display: flex; align-items: center; gap: .9rem; margin-inline-start: auto; }
+@media (min-width: 900px) { .hdr__aside { margin-inline-start: 0; } }
+.hdr__tel { font-family: var(--font-mono); font-size: .875rem; color: var(--silver); }
+@media (max-width: 767px) { .hdr__tel { display: none; } }
+.lang {
+  font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em;
+  border: 1px solid var(--rule-500); padding: .4rem .7rem; color: var(--muted);
+}
+.lang:hover { color: var(--cream); border-color: var(--gold-400); }
+.hdr .btn { padding: .6rem 1.05rem; font-size: .875rem; }
+@media (max-width: 599px) { .hdr .btn span { display: none; } }
+
+.skip {
+  position: absolute; inset-inline-start: -9999px; inset-block-start: .5rem; z-index: 100;
+  background: var(--gold-400); color: var(--ink-900); padding: .6rem 1rem; font-weight: 600;
+}
+.skip:focus { inset-inline-start: .5rem; }
+
+/* ── 7. HERO + THE LIGHT SYSTEM ──────────────────────────────────────────── */
+
+.hero {
+  min-block-size: 100svh;              /* svh — mobile address bar */
+  display: flex; align-items: center;
+  padding-block: 6rem 4rem;
+  isolation: isolate;                  /* contain every screen blend to the hero */
+  overflow: hidden;
+}
+.hero__grid {
+  position: relative; z-index: 2;
+  display: grid; gap: clamp(2rem, 5vw, 4rem);
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .hero__grid { grid-template-columns: 7fr 5fr; }
+}
+
+.hero__copy { position: relative; z-index: 3; }
+.hero h1 { margin-block: .5rem 1.5rem; }
+.hero .lead { margin-block-end: 2.25rem; }
+.hero__cta { display: flex; flex-wrap: wrap; gap: .9rem; }
+.hero__cue {
+  margin-block-start: clamp(2.5rem, 6vw, 5rem);
+  display: flex; align-items: center; gap: .6rem;
+}
+.hero__cue::before {
+  content: ""; inline-size: 2.5rem; block-size: 1px; background: var(--rule-500);
+}
+
+/* The tower */
+.tower-wrap {
+  position: relative;
+  justify-self: center;
+  inline-size: min(100%, 420px);
+  display: grid; place-items: center;
+  isolation: isolate;             /* contain the screen blends to the tower */
+}
+.tower {
+  position: relative; z-index: 2;
+  block-size: min(52vh, 460px);   /* leaves room for the wordmark below */
+  inline-size: auto;
+  max-inline-size: none;          /* beat the global img/svg max-width:100% */
+  overflow: visible;
+}
+/* On a phone the full-height hero squeezes the tower until it clips. Let the
+   hero size to its content instead — a scrolling hero is fine on mobile. */
+@media (max-width: 899px) {
+  .hero { min-block-size: auto; padding-block: 3rem 3.5rem; }
+  .tower { block-size: min(26vh, 220px); }
+  /* Brand first on a phone: the mark and the light are what the visitor
+     should meet, not a wall of type they have to scroll past. */
+  .tower-wrap { order: -1; }
+  .hero__grid { gap: clamp(1.5rem, 5vw, 2.5rem); }
+}
+.tower path { stroke-dasharray: 1; stroke-dashoffset: 0; }  /* FINAL state is the default */
+.tower .gem {
+  transform-box: fill-box; transform-origin: center;
+  filter:
+    drop-shadow(0 0 6px #FFF)
+    drop-shadow(0 0 22px rgba(232,199,119,.75))
+    drop-shadow(0 0 60px rgba(217,174,82,.35));   /* static, never animated */
+}
+
+/* The wordmark sits under the tower, at brand scale. Silver like the logo —
+   gold here would be a fourth gold occurrence in one viewport. */
+.tower-mark {
+  position: relative; z-index: 3;
+  margin-block-start: clamp(.5rem, 1.6vw, 1.25rem);
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--silver);
+  text-align: center;
+  text-shadow: 0 0 28px rgba(232,199,119,.14);
+}
+:lang(en) .tower-mark { letter-spacing: .12em; font-weight: 400; }
+
+/* Ray fan — painted once into a layer, only `rotate` animates.
+   2.4° spokes on a 12° period; two fans at different rates to kill moiré. */
+.beam, .beam2 {
+  position: absolute; z-index: 1;
+  inline-size: min(72vmax, 950px);             /* capped: an uncapped vmax layer busts GPU max texture */
+  block-size: min(72vmax, 950px);
+  /* PHYSICAL left, deliberately. This is geometric centring on the gem, not
+     reading-order placement — inset-inline-start would flip in RTL and throw
+     the layer a full width off-centre. */
+  top: 7.7%;                                   /* the gem: y=46 of a 600 viewBox */
+  left: 50%;
+  translate: -50% -50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  /* Rays are born at the gem and die into the dark — the mask does that work,
+     so the gradient itself stays weak. Light, not a sunburst. */
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,.9) 0%, rgba(0,0,0,.26) 13%, transparent 36%);
+  mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,.9) 0%, rgba(0,0,0,.26) 13%, transparent 36%);
+  animation: spin 90s linear infinite;
+}
+.beam {
+  background: repeating-conic-gradient(from 0deg at 50% 50%,
+    rgba(232,199,119,.13) 0deg 2.4deg, transparent 2.4deg 12deg);
+  opacity: .5;
+}
+/* Second fan at a different rate and period — two coarse fans beat one fine
+   one, which moirés as it rotates. */
+.beam2 {
+  background: repeating-conic-gradient(from 5deg at 50% 50%,
+    rgba(217,174,82,.075) 0deg 1.8deg, transparent 1.8deg 20deg);
+  opacity: .45;
+  animation-duration: 150s; animation-direction: reverse;
+}
+@keyframes spin { to { rotate: 360deg; } }
+
+/* Cone wash — ONLY opacity animates. The blur radius is static. */
+.cone {
+  position: absolute; z-index: 1;
+  top: 7.7%; left: 50%;                        /* physical — born at the gem */
+  translate: -50% 0;
+  inline-size: min(78vmax, 1050px); block-size: min(72vmax, 950px);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(40px);                          /* static radius — never tweened */
+  opacity: .8;                                 /* final state; GSAP owns it when motion is on */
+}
+/* clip-path is applied AFTER filter, so clipping the blurred element gives a
+   hard edge. Clip the child, blur the parent — the blur then softens the cut. */
+.cone::before {
+  content: ""; position: absolute; inset: 0;
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background: linear-gradient(to bottom, rgba(232,199,119,.22), rgba(217,174,82,.05) 55%, transparent 80%);
+}
+
+/* Grain — data URI MUST carry width/height or it stretches into soft blobs.
+   `normal` not `overlay`: overlay is multiply below 0.5 luminance, so on a
+   near-black page it contributes ~1/10 of its intended value. */
+.grain {
+  position: fixed; inset: -50%; z-index: 9; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px; background-repeat: repeat;
+  mix-blend-mode: normal;
+}
+
+/* ── 8. TRUST STRIP ──────────────────────────────────────────────────────── */
+
+.trust { border-block: 1px solid var(--rule-400); padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+.trust__grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 900px) { .trust__grid { grid-template-columns: repeat(4, 1fr); } }
+.trust__cell { padding: 1.25rem clamp(1rem, 2.5vw, 2rem); border-inline-start: 1px solid var(--rule-400); }
+.trust__cell:first-child { border-inline-start: 0; }
+@media (max-width: 899px) {
+  .trust__cell:nth-child(odd) { border-inline-start: 0; }
+  .trust__cell:nth-child(n+3) { border-block-start: 1px solid var(--rule-400); }
+}
+/* Static numbers. No count-up — that device reads B2B SaaS and cheapens a contractor. */
+.trust__n { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--cream); font-weight: 300; }
+.trust__l { margin-block-start: .4rem; }
+
+/* ── 9. SERVICES — 4 pillars, uniform cells, no bento, no shadows ────────── */
+
+.pillars { display: grid; gap: 1px; background: var(--rule-400); border: 1px solid var(--rule-400); }
+@media (min-width: 700px)  { .pillars { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1180px) { .pillars { grid-template-columns: repeat(4, 1fr); } }
+
+.pillar { background: var(--ink-900); padding: 0; display: flex; flex-direction: column; }
+.pillar__media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; }
+.pillar__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.pillar__body { padding: clamp(1.25rem, 2.5vw, 1.75rem); display: flex; flex-direction: column; gap: .85rem; flex: 1; }
+.pillar h3 { font-size: 1.25rem; }
+.pillar ul { list-style: none; padding: 0; display: grid; gap: .4rem; }
+.pillar li { position: relative; padding-inline-start: 1rem; font-size: .9375rem; color: var(--silver); }
+.pillar li::before {
+  content: ""; position: absolute; inset-inline-start: 0; inset-block-start: .62em;
+  inline-size: .375rem; block-size: 1px; background: var(--gold-400);
+}
+.pillar .meta { margin-block-start: auto; padding-block-start: .85rem; border-block-start: 1px solid var(--rule-400); }
+
+/* ── 10. PACKAGES + CONFIGURATOR ─────────────────────────────────────────── */
+
+/* Native scroll-snap. The browser handles RTL for free — zero JS, keyboard-accessible. */
+.tiers {
+  display: grid; gap: 1px; background: var(--rule-400);
+  border: 1px solid var(--rule-400);
+}
+@media (max-width: 979px) {
+  .tiers {
+    grid-auto-flow: column; grid-auto-columns: 78%;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-padding-inline-start: var(--gutter);
+    overscroll-behavior-inline: contain;
+  }
+  .tier { scroll-snap-align: start; }
+}
+@media (min-width: 980px) { .tiers { grid-template-columns: repeat(5, 1fr); } }
+
+.tier { background: var(--ink-800); padding: clamp(1.25rem, 2.5vw, 1.75rem); display: flex; flex-direction: column; gap: .9rem; }
+.tier--feature { background: var(--ink-700); }
+.tier__name { font-family: var(--font-display); font-size: 1.375rem; font-weight: 300; color: var(--cream); }
+.tier__mat { font-size: .9375rem; color: var(--silver); }
+.tier__warranty {
+  margin-block-start: auto; padding-block-start: .9rem; border-block-start: 1px solid var(--rule-400);
+  font-family: var(--font-mono); font-size: var(--fs-meta); letter-spacing: var(--ls-meta); color: var(--gold-400);
+}
+:lang(ar) .tier__warranty { font-family: var(--font-body); letter-spacing: 0; }
+
+.quoter {
+  margin-block-start: clamp(2rem, 4vw, 3rem);
+  display: grid; gap: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--ink-800); border: 1px solid var(--rule-400);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+@media (min-width: 900px) { .quoter { grid-template-columns: 4fr 8fr; } }
+.quoter__fields { display: grid; gap: 1.1rem; grid-template-columns: 1fr; }
+@media (min-width: 620px) { .quoter__fields { grid-template-columns: repeat(3, 1fr); } }
+.field { display: grid; gap: .45rem; }
+.field > span { font-family: var(--font-mono); font-size: var(--fs-meta); letter-spacing: var(--ls-meta); color: var(--muted); }
+:lang(ar) .field > span { font-family: var(--font-body); letter-spacing: 0; }
+[dir="rtl"] .field input { text-align: right; }   /* match the selects */
+.field select, .field input {
+  background: var(--slate-500); border: 1px solid var(--rule-500); color: var(--cream);
+  padding: .8rem .9rem; border-radius: 0; inline-size: 100%;
+}
+.field select {
+  appearance: none;
+  /* One inline SVG chevron — no extra request, and no two-triangle trick whose
+     tile order silently inverts when the direction flips. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238B97A4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-inline-end: 2.5rem;
+}
+[dir="rtl"] .field select { background-position: left 1rem center; }
+.pay { margin-block-start: 1.5rem; display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+.pay li { list-style: none; }
+
+/* ── 11. BEFORE / AFTER ──────────────────────────────────────────────────── */
+
+/* One comparator, full width — a real pair beats three mismatched ones. */
+.cmp { position: relative; }
+.cmp--solo { inline-size: min(100%, 1000px); margin-inline: auto; }
+.cmp__frame { position: relative; aspect-ratio: 3 / 2; overflow: hidden; background: var(--ink-800); }
+.cmp__frame img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* clip-path is physical. --x = how much of the frame BEFORE occupies, measured
+   from the reading start; the flipped rule below is what makes RTL correct. */
+.cmp__after { clip-path: inset(0 0 0 var(--x, 45%)); }
+[dir="rtl"] .cmp__after { clip-path: inset(0 var(--x, 45%) 0 0); }
+.cmp__handle {
+  position: absolute; inset-block: 0; inset-inline-start: 0;
+  inline-size: 100%; block-size: 100%;
+  appearance: none; background: transparent; margin: 0; cursor: ew-resize;
+}
+.cmp__handle::-webkit-slider-thumb { appearance: none; inline-size: 40px; block-size: 100%; background: transparent; cursor: ew-resize; }
+.cmp__handle::-moz-range-thumb { inline-size: 40px; block-size: 100%; border: 0; background: transparent; cursor: ew-resize; }
+.cmp__handle:focus-visible { outline-offset: -3px; }
+.cmp__bar {
+  position: absolute; inset-block: 0; inline-size: 1px; background: var(--gold-400);
+  pointer-events: none; box-shadow: 0 0 12px rgba(217,174,82,.6);
+}
+.cmp__bar::after {
+  content: ""; position: absolute; inset-block-start: 50%; inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: 2.25rem; block-size: 2.25rem; border: 1px solid var(--gold-400);
+  background: color-mix(in srgb, var(--ink-900) 70%, transparent);
+}
+.cmp__tags { position: absolute; inset-block-start: .75rem; inset-inline: .75rem; display: flex; justify-content: space-between; }
+.cmp__tag { background: color-mix(in srgb, var(--ink-900) 82%, transparent); padding: .25rem .6rem; }
+.cmp__cap { margin-block-start: .85rem; }
+
+/* ── 12. PROJECT COLLECTIONS — one unit shown whole ─────────────────────── */
+
+.proj { display: grid; gap: clamp(1.25rem, 2.5vw, 2rem); }
+.proj + .proj {
+  margin-block-start: clamp(3rem, 6vw, 5rem);
+  padding-block-start: clamp(3rem, 6vw, 5rem);
+  border-block-start: 1px solid var(--rule-400);
+}
+.proj__head { display: grid; gap: .55rem; max-inline-size: 68ch; }
+.proj__head h3 { font-size: clamp(1.375rem, 2.4vw, 1.875rem); }
+
+/* 5 frames: a lead image at 2×2 and four supporting ones beside it. */
+.proj__grid {
+  display: grid; gap: 1px;
+  background: var(--rule-400); border: 1px solid var(--rule-400);
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 800px) { .proj__grid { grid-template-columns: repeat(4, 1fr); } }
+.proj__grid figure { margin: 0; background: var(--ink-900); overflow: hidden; }
+.proj__grid img {
+  inline-size: 100%; block-size: 100%;
+  aspect-ratio: 3 / 2; object-fit: cover;
+  transition: transform .8s var(--ease-out);
+}
+.proj__grid figure:first-child { grid-column: span 2; grid-row: span 2; }
+@media (hover: hover) { .proj__grid figure:hover img { transform: scale(1.04); } }
+
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-end: 2rem; }
+.chip {
+  border: 1px solid var(--rule-500); padding: .45rem 1rem; font-size: .875rem;
+  background: transparent; cursor: pointer; color: var(--muted);
+}
+.chip[aria-pressed="true"] { border-color: var(--gold-400); color: var(--gold-400); }
+
+/* ── 13. COMPOUND WALL ───────────────────────────────────────────────────── */
+
+.wall {
+  display: grid; gap: 1px; background: var(--rule-400);
+  border: 1px solid var(--rule-400);
+  grid-template-columns: repeat(2, 1fr);
+  position: relative; overflow: hidden;
+}
+@media (min-width: 700px)  { .wall { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .wall { grid-template-columns: repeat(5, 1fr); } }
+.wall span {
+  background: var(--ink-900); padding: clamp(1.25rem, 3vw, 2rem) 1rem;
+  font-family: var(--font-display); font-weight: 300; font-size: 1.0625rem;
+  color: var(--muted); text-align: center;
+}
+.wall__sweep {
+  position: absolute; inset-block: 0; inline-size: 40%; z-index: 2; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(232,199,119,.16) 50%, transparent);
+  transform: translateX(calc(-160% * var(--dir)));
+}
+
+/* Service areas — governorate columns, not a compound soup */
+.areas {
+  position: relative; overflow: hidden;
+  display: grid; gap: 1px;
+  background: var(--rule-400); border: 1px solid var(--rule-400);
+}
+@media (min-width: 800px) { .areas { grid-template-columns: repeat(3, 1fr); } }
+.areas__col { background: var(--ink-900); padding: clamp(1.4rem, 3vw, 2.25rem); }
+.areas__col h3 { font-size: 1.5rem; margin-block-end: 1.1rem; }
+.areas__col ul { list-style: none; padding: 0; display: grid; gap: .6rem; }
+.areas__col li {
+  position: relative; padding-inline-start: 1rem;
+  font-size: .9375rem; color: var(--silver);
+}
+/* Eighteen gold dashes would blow the accent budget — these stay neutral. */
+.areas__col li::before {
+  content: ""; position: absolute; inset-inline-start: 0; inset-block-start: .62em;
+  inline-size: .375rem; block-size: 1px; background: var(--rule-500);
+}
+
+/* ── 14. PROCESS ─────────────────────────────────────────────────────────── */
+
+.steps { position: relative; display: grid; gap: 2rem; }
+@media (min-width: 900px) { .steps { grid-template-columns: repeat(6, 1fr); gap: 1rem; } }
+.steps__line {
+  display: none;
+  position: absolute; inset-block-start: 1.05rem; inset-inline: 0; block-size: 1px;
+  background: linear-gradient(90deg, transparent, #A77E33 8%, #E8C777 50%, #A77E33 92%, transparent);
+  transform: scaleX(1); transform-origin: calc(50% - 50% * var(--dir)) 50%;
+}
+@media (min-width: 900px) { .steps__line { display: block; } }
+.step { position: relative; padding-block-start: 3rem; }
+@media (max-width: 899px) { .step { padding-block-start: 0; padding-inline-start: 3rem; } }
+.step__node {
+  position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  inline-size: 2.1rem; block-size: 2.1rem;
+  border: 1px solid var(--gold-400); background: var(--ink-900);
+  display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: .8125rem; color: var(--gold-400);
+}
+.step h3 { font-size: 1.0625rem; margin-block-end: .35rem; }
+
+/* ── 15. GUARANTEES / TESTIMONIALS ───────────────────────────────────────── */
+
+.cards { display: grid; gap: 1px; background: var(--rule-400); border: 1px solid var(--rule-400); }
+@media (min-width: 700px)  { .cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .cards--4 { grid-template-columns: repeat(4, 1fr); } }
+.card { background: var(--ink-800); padding: clamp(1.4rem, 3vw, 2rem); display: grid; gap: .7rem; align-content: start; }
+.card h3 { font-size: 1.125rem; }
+
+.quote { display: grid; gap: 1rem; }
+.quote__stars { color: var(--gold-400); letter-spacing: .15em; font-size: .875rem; }
+.quote__who { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--muted); letter-spacing: var(--ls-meta); }
+:lang(ar) .quote__who { font-family: var(--font-body); letter-spacing: 0; }
+
+/* ── 16. DISCLOSURE (objections + FAQ) — native <details>, zero JS ────────── */
+
+.qa { display: grid; gap: clamp(2rem, 4vw, 3.5rem); }
+@media (min-width: 900px) { .qa { grid-template-columns: 5fr 7fr; align-items: start; } }
+.qa__list { display: grid; }
+.qa__list details { border-block-start: 1px solid var(--rule-400); }
+.qa__list details:last-of-type { border-block-end: 1px solid var(--rule-400); }
+.qa__list summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding-block: 1.25rem;
+  font-family: var(--font-display); font-weight: 300; font-size: var(--fs-h3);
+  color: var(--cream);
+}
+.qa__list summary::-webkit-details-marker { display: none; }
+.qa__list summary::after {
+  content: "+"; font-family: var(--font-mono); font-size: 1.25rem; color: var(--gold-400); flex: none;
+}
+.qa__list details[open] summary::after { content: "–"; }
+.qa__list details > *:not(summary) { padding-block-end: 1.5rem; max-inline-size: 62ch; }
+
+.notfor { border: 1px solid var(--rule-500); padding: clamp(1.4rem, 3vw, 2rem); }
+.notfor h3 { font-size: 1.25rem; margin-block-end: .85rem; }
+.notfor ul { list-style: none; padding: 0; display: grid; gap: .55rem; }
+.notfor li { padding-inline-start: 1.1rem; position: relative; }
+.notfor li::before {
+  content: ""; position: absolute; inset-inline-start: 0; inset-block-start: .62em;
+  inline-size: .5rem; block-size: 1px; background: var(--muted);
+}
+
+/* ── 17. FINAL CTA — the page's only cream band ──────────────────────────── */
+
+.finale { background: var(--cream); color: var(--ink-900); position: relative; overflow: hidden; }
+.finale h2 { color: var(--ink-900); }
+.finale p { color: #3A3A38; }
+.finale .btn { border-color: var(--ink-900); color: var(--ink-900); }
+.finale .btn--gold { background: var(--ink-900); border-color: var(--ink-900); color: var(--cream); }
+.finale .btn--gold:hover { background: #1B242E; border-color: #1B242E; }
+.finale a { color: var(--gold-ink); }             /* 6.32:1 on cream. NEVER on dark. */
+.finale__in { display: grid; justify-items: center; text-align: center; gap: 1.1rem; }
+.finale__in .eyebrow { color: var(--gold-ink); margin-block-end: 0; }   /* 6.32:1 on cream */
+.finale__in .gold-rule {
+  inline-size: 4rem; opacity: 1;
+  background: linear-gradient(90deg, transparent, var(--gold-ink) 30%, var(--gold-ink) 70%, transparent);
+}
+.finale__in h2 { max-inline-size: 18ch; margin-block-start: .4rem; }
+.finale__in .lead { color: #3A3A38; max-inline-size: 46ch; }
+.finale__cta { display: flex; flex-wrap: wrap; gap: .9rem; justify-content: center; margin-block-start: .9rem; }
+.finale__note { color: #5C5C58; font-size: .875rem; margin-block-start: .4rem; }
+
+/* ── 18. CONTACT / FOOTER / FLOATING ─────────────────────────────────────── */
+
+.contact__grid { display: grid; gap: clamp(2rem, 4vw, 3rem); }
+@media (min-width: 900px) { .contact__grid { grid-template-columns: 5fr 7fr; } }
+.map { aspect-ratio: 16 / 10; border: 1px solid var(--rule-400); background: var(--ink-800); }
+.map iframe { inline-size: 100%; block-size: 100%; border: 0; filter: grayscale(1) invert(.92) hue-rotate(180deg) contrast(.85); }
+
+.ftr { border-block-start: 1px solid var(--rule-400); padding-block: 3.5rem 2.5rem; }
+.ftr__grid { display: grid; gap: 2rem; }
+@media (min-width: 800px) { .ftr__grid { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+.ftr h3 { font-family: var(--font-mono); font-size: var(--fs-meta); letter-spacing: var(--ls-meta); color: var(--muted); font-weight: 400; margin-block-end: .9rem; }
+:lang(ar) .ftr h3 { font-family: var(--font-body); letter-spacing: 0; }
+.ftr ul { list-style: none; padding: 0; display: grid; gap: .5rem; }
+.ftr a:hover { color: var(--cream); }
+.ftr__legal { margin-block-start: 2.5rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--rule-400); }
+
+.float {
+  position: fixed; inset-block-end: clamp(1rem, 3vw, 1.75rem);
+  inset-inline-end: clamp(1rem, 3vw, 1.75rem);
+  z-index: 45; display: grid; gap: .6rem;
+  opacity: 0; transform: translateY(1rem); pointer-events: none;
+  transition: opacity .35s var(--ease-out), transform .35s var(--ease-out);
+}
+.float.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.float a {
+  inline-size: 56px; block-size: 56px;            /* thumb-reach target */
+  display: grid; place-items: center;
+  border: 1px solid var(--rule-500); background: var(--ink-800);
+}
+.float a:hover { border-color: var(--gold-400); }
+.float a.is-wa { background: var(--gold-400); border-color: var(--gold-400); color: var(--ink-900); }
+.float svg { inline-size: 24px; block-size: 24px; }
+/* Never pulses, never bounces. */
+
+/* ── 19. REVEALS — final state is the default; JS opts in ────────────────── */
+
+.reveal { opacity: 1; transform: none; }
+.js .reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+.js .reveal.is-in { opacity: 1; transform: none; }
+
+/* clip-path reveal + counter-scale — the counter-scale is what separates good
+   from cheap. inset() is physical, so the closed side flips per direction:
+   inset(0 100% 0 0) opens left→right, inset(0 0 0 100%) opens right→left.
+   The RTL selector has NO descendant combinator — `.js` and `dir` both live on
+   <html>, so `.js [dir=rtl]` would never match. */
+.js .clipmask { clip-path: inset(0 100% 0 0); transition: clip-path 1s var(--ease-out); transition-delay: var(--d, 0ms); }
+.js[dir="rtl"] .clipmask { clip-path: inset(0 0 0 100%); }
+.js .clipmask.is-in { clip-path: inset(0 0 0 0); }
+.js .clipmask img { transform: scale(1.15); transition: transform 1.2s var(--ease-out); transition-delay: var(--d, 0ms); }
+.js .clipmask.is-in img { transform: scale(1); }
+
+/* ── 20. ACCESSIBILITY OVERRIDES ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;   /* .01ms not none — animationend still fires */
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    animation-timeline: auto !important;
+    scroll-behavior: auto !important;
+  }
+  /* The failure mode to avoid: a tower that never draws. */
+  .tower path { stroke-dashoffset: 0 !important; }
+  .tower .gem { opacity: 1 !important; scale: 1 !important; }
+  .beam, .beam2 { opacity: .45 !important; animation: none !important; }
+  .cone { opacity: .7 !important; animation: none !important; }
+  .js .reveal { opacity: 1 !important; transform: none !important; }
+  .js .clipmask { clip-path: inset(0 0 0 0) !important; }
+  .js .clipmask img { transform: none !important; }
+  .shimmer::after { display: none; }
+}
+
+/* Motion preference alone does not cover translucent overlays. */
+@media (prefers-reduced-transparency: reduce) {
+  .beam, .beam2, .cone, .grain, .wall__sweep { display: none; }
+}
+
+@media (forced-colors: active) {
+  /* Gradient-clipped text renders transparent in some implementations —
+     the wordmark would disappear entirely. */
+  .metal-gold { -webkit-text-fill-color: currentColor; background: none; filter: none; }
+  .beam, .beam2, .cone, .grain, .wall__sweep, .shimmer::after { display: none; }
+  .gold-rule, .steps__line { background: CanvasText; opacity: 1; }
+  .btn, .card, .tier, .pillar { border: 1px solid CanvasText; }
+}
+
+@media print {
+  .beam, .beam2, .cone, .grain, .float, .hdr { display: none; }
+  body { background: #fff; color: #000; }
+}

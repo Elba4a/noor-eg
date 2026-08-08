@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 760" width="400" height="760" role="img" aria-label="NOOR">
+  <defs>
+    <linearGradient id="goldline" x1="200" y1="26" x2="200" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F6EFD2"/>
+      <stop offset="0.35" stop-color="#E8C777"/>
+      <stop offset="1" stop-color="#A77E33"/>
+    </linearGradient>
+    <linearGradient id="silverline" x1="24" y1="0" x2="376" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5A6878"/>
+      <stop offset="0.5" stop-color="#E4EAF0"/>
+      <stop offset="1" stop-color="#5A6878"/>
+    </linearGradient>
+  </defs>
+
+  <g fill="none" stroke="url(#goldline)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M200 26 L213 46 L200 66 L187 46 Z" fill="#FFFFFF" stroke="none"/>
+    <path d="M200 70 L182 190"/>
+    <path d="M200 70 L218 190"/>
+    <path d="M182 190 L218 190"/>
+    <path d="M200 190 L200 560"/>
+    <path d="M191 190 L175 560"/>
+    <path d="M209 190 L225 560"/>
+    <path d="M182 190 L150 560"/>
+    <path d="M218 190 L250 560"/>
+    <path d="M200 78 Q200 330 160 562"/>
+    <path d="M200 78 Q200 330 240 562"/>
+    <path d="M200 78 Q200 342 138 562"/>
+    <path d="M200 78 Q200 342 262 562"/>
+    <path d="M200 78 Q200 354 116 562"/>
+    <path d="M200 78 Q200 354 284 562"/>
+    <path d="M200 78 Q200 366 94 562"/>
+    <path d="M200 78 Q200 366 306 562"/>
+    <path d="M200 78 Q200 378 72 562"/>
+    <path d="M200 78 Q200 378 328 562"/>
+    <path d="M200 78 Q200 390 50 562"/>
+    <path d="M200 78 Q200 390 350 562"/>
+    <path d="M200 78 Q200 402 30 562"/>
+    <path d="M200 78 Q200 402 370 562"/>
+  </g>
+
+  <path d="M20 575 L380 575" fill="none" stroke="url(#silverline)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <text x="200" y="660" text-anchor="middle" font-family="'IBM Plex Sans',system-ui,sans-serif"
+        font-size="104" font-weight="500" letter-spacing="6" fill="#E4EAF0">NOOR</text>
+  <text x="200" y="700" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace"
+        font-size="21" letter-spacing="2.5" fill="#8B97A4">REAL ESTATE · CONSTRUCTION · FINISHING</text>
+</svg>
