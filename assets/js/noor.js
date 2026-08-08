@@ -178,16 +178,21 @@
         });
       }
 
-      /* ---- S5 · demonstrate the comparator affordance, once ------------ */
-      ScrollTrigger.create({
-        trigger: '#before-after', start: 'top 70%', once: true,
-        onEnter: () => $$('.cmp').forEach((cmp, i) => {
-          gsap.fromTo({ x: 100 }, { x: 100 }, {
-            x: 45, duration: 0.9, delay: i * 0.12, ease: 'expo.out',
-            onUpdate() { cmp._demo(Math.round(this.targets()[0].x)); },
-          });
-        }),
-      });
+      /* ---- S5 · demonstrate the comparator affordance, once ------------
+         The section ships commented out until real same-room photos exist,
+         so guard on it — a ScrollTrigger with a missing trigger silently
+         pins its start/end to 0 and fires on load. */
+      if ($('#before-after')) {
+        ScrollTrigger.create({
+          trigger: '#before-after', start: 'top 70%', once: true,
+          onEnter: () => $$('.cmp').forEach((cmp, i) => {
+            gsap.fromTo({ x: 100 }, { x: 100 }, {
+              x: 45, duration: 0.9, delay: i * 0.12, ease: 'expo.out',
+              onUpdate() { cmp._demo(Math.round(this.targets()[0].x)); },
+            });
+          }),
+        });
+      }
 
       /* ---- S10 · one quote reveals. One, not four. --------------------- */
       const q = SplitText.create('#lead-quote p', { type: 'lines', mask: 'lines', aria: 'auto' });

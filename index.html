@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://images.pexels.com">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
-<link rel="stylesheet" href="assets/css/noor.css?v=5">
+<link rel="stylesheet" href="assets/css/noor.css?v=6">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -294,30 +294,15 @@
   </div>
 </section>
 
-<!-- ── S5 · BEFORE / AFTER ────────────────────────────────────────────── -->
-<section id="before-after">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">قبل وبعد</span>
-      <div class="gold-rule" aria-hidden="true"></div>
-      <h2>الفرق اللي بيعمله التشطيب.</h2>
-      <p class="lead">اسحب الخط. ده الفرق بين وحدة على الطوب ووحدة بعد تشطيب كامل.</p>
-    </div>
-
-    <figure class="cmp cmp--solo">
-      <div class="cmp__frame">
-        <img src="https://images.pexels.com/photos/15798784/pexels-photo-15798784.jpeg?auto=compress&cs=tinysrgb&w=1400&h=933&fit=crop" alt="شقة على الطوب قبل التشطيب: أرضية خرسانة وحوائط خام وعدة شغل" width="1400" height="933" loading="lazy" decoding="async">
-        <img class="cmp__after" src="https://images.pexels.com/photos/7214166/pexels-photo-7214166.jpeg?auto=compress&cs=tinysrgb&w=1400&h=933&fit=crop" alt="صالون مودرن بعد التشطيب الكامل: أرضية فاتحة، ركنة، وشبابيك بارتفاع كامل" width="1400" height="933" loading="lazy" decoding="async">
-        <span class="cmp__bar" aria-hidden="true"></span>
-        <div class="cmp__tags meta"><span class="cmp__tag">قبل</span><span class="cmp__tag">بعد</span></div>
-        <input class="cmp__handle" type="range" min="0" max="100" value="45" aria-label="اسحب لمقارنة قبل وبعد">
-      </div>
-      <figcaption class="cmp__cap meta meta--latin">BARE SHELL → FULL FINISH</figcaption>
-    </figure>
-
-    <p class="muted" style="margin-block-start:1.5rem;font-size:.875rem;max-inline-size:70ch">دي مرحلة واحدة موثّقة. صور «قبل وبعد» من مشاريع نور هتحلّ مكانها قبل الإطلاق — نفس الوحدة، الفرق اللي بيعمله التشطيب.</p>
-  </div>
-</section>
+<!-- ── S5 · BEFORE / AFTER — معطَّل عن قصد ──────────────────────────────
+     القسم ده بيحتاج صورتين لـ**نفس الغرفة، نفس الزاوية، نفس العدسة**: واحدة
+     على الطوب وواحدة بعد التشطيب. مكتبات الصور المجانية مافيهاش أزواج حقيقية
+     زي دي — كل جلسة تصوير إما كلها «قبل» أو كلها «بعد» — وأي تقريب بصورتين
+     من مكانين مختلفين بيبان فورًا وبيضرب مصداقية الصفحة كلها.
+     الماركب والـCSS والجافاسكريبت كلهم لسه موجودين وشغالين. أول ما تصوّر
+     تسليم حقيقي (نفس الوقفة قبل وبعد)، شيل التعليق ده وحط الـsrc الجديدين.
+     الكود محفوظ في git — راجع commit «Park the before/after comparator».
+-->
 
 <!-- ── S6 · PORTFOLIO — pinned ────────────────────────────────────────── -->
 <section id="work" class="band">
@@ -649,6 +634,6 @@
         integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/SplitText.min.js" defer
         integrity="sha384-SWJ0lLVRoipvHh59xj0pL7uC7Ih51F+5smaFtrG+2nr+TlDZU5SYJHmxfolbeNTr" crossorigin="anonymous"></script>
-<script src="assets/js/noor.js?v=5" defer></script>
+<script src="assets/js/noor.js?v=6" defer></script>
 </body>
 </html>
